@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
+        http://www.springframework.org/schema/aop
+        http://www.springframework.org/schema/aop/spring-aop-2.0.xsd">
+
+    <bean id="hello" name="hello_name" class="com.houde.spring.ioc.impl.HelloImpl"
+          lazy-init="true"
+    />
+    <bean id="hello2" name="hello2_name" class="com.houde.spring.ioc.impl.HelloImpl"/>
+
+    <!--默认构造器-->
+    <bean name="bean1" class="com.houde.spring.ioc.impl.HelloImpl2"/>
+    <bean name="bean2" class="com.houde.spring.ioc.impl.HelloImpl2">
+        <!-- 指定构造器参数 -->
+        <constructor-arg index="0" value="Hello Spring!"/>
+    </bean>
+
+    <!-- 使用静态工厂方法 -->
+    <bean id="bean3" class="com.houde.spring.ioc.impl.HelloApiStaticFactory" factory-method="newInstance">
+        <constructor-arg index="0" value="Hello Spring!"/>
+    </bean>
+
+    <!--定义实例工厂Bean-->
+    <bean id="beanInstanceFactory"
+          class="com.houde.spring.ioc.impl.HelloApiInstanceFactory"/>
+    <!--使用实例工厂Bean创建Bean-->
+    <bean id="bean4"
+          factory-bean="beanInstanceFactory"
+          factory-method="newInstance">
+        <!--index="0" 表示第0个参数-->
+        <constructor-arg index="0" value="Hello Spring!"/>
+    </bean>
+    <bean id="bean4_1"
+          factory-bean="beanInstanceFactory"
+          factory-method="newInstance1">
+    </bean>
+
+    <!-- 通过构造器参数索引方式依赖注入 -->
+    <bean id="byIndex" class="com.houde.spring.ioc.impl.HelloImpl3">
+        <constructor-arg index="0" value="Hello World!"/>
+        <constructor-arg index="1" value="1"/>
+    </bean>
+    <!-- 通过构造器参数类型方式依赖注入 -->
+    <bean id="byType" class="com.houde.spring.ioc.impl.HelloImpl3">
+        <constructor-arg type="java.lang.String" value="Hello World!"/>
+        <constructor-arg type="int" value="2"/>
+    </bean>
+    <!-- 通过构造器参数名称方式依赖注入 -->
+    <bean id="byName" class="com.houde.spring.ioc.impl.HelloImpl3">
+        <constructor-arg name="message" value="Hello World!"/>
+        <constructor-arg name="index" value="3"/>
+    </bean>
+
+    <!--静态工厂-->
+    <bean id="byIndex_static"
+          class="com.houde.spring.ioc.impl.DependencyInjectByStaticFactory" factory-method="newInstance">
+        <constructor-arg index="0" value="Hello World!"/>
+        <constructor-arg index="1" value="1"/>
+    </bean>
+    <bean id="byType_static"
+          class="com.houde.spring.ioc.impl.DependencyInjectByStaticFactory" factory-method="newInstance">
+        <constructor-arg type="java.lang.String" value="Hello World!"/>
+        <constructor-arg type="int" value="2"/>
+    </bean>
+    <bean id="byName_static"
+          class="com.houde.spring.ioc.impl.DependencyInjectByStaticFactory" factory-method="newInstance">
+        <constructor-arg name="message" value="Hello World!"/>
+        <constructor-arg name="index" value="3"/>
+    </bean>
+
+
+    <!--通过setter方式进行依赖注入 -->
+    <bean id="bean_setter" class="com.houde.spring.ioc.impl.HelloImpl4">
+        <property name="message" value="Hello Setter"/>
+        <property name="index">
+            <value>1</value>
+        </property>
+        <property name="success" value="true"/>
+    </bean>
+
+
+    <!--注入的是beanID 不是bean对象-->
+    <bean id="str_bean1" class="java.lang.String">
+        <constructor-arg index="0" value="test"/>
+    </bean>
+    <bean id="str_bean2" class="java.lang.String">
+        <constructor-arg index="0" value="test2"/>
+    </bean>
+    <!--将在容器初始化时校验注入的ID对于的Bean是否存在，如果不存在将抛出异常。-->
+    <bean id="idrefBean1" class="com.houde.spring.ioc.impl.IdRefTestBean">
+        <property name="id">
+            <idref bean="str_bean1"/>
+        </property>
+    </bean>
+    <!--将在XML解析时校验注入的ID对于的Bean在当前配置文件中是否存在，如果不存在将抛出异常-->
+    <bean id="idrefBean2" class="com.houde.spring.ioc.impl.IdRefTestBean">
+        <!--<property name="id" ref="str_bean2"/>-->
+        <property name="id">
+            <idref local="str_bean2"/>
+        </property>
+    </bean>
+
+
+    <!--注入list-->
+    <bean id="listBean" class="com.houde.spring.ioc.impl.ListTestBean">
+        <property name="values">
+            <list>
+                <value>1</value>
+                <value>2</value>
+                <value>3</value>
+            </list>
+        </property>
+    </bean>
+    <bean id="setBean" class="com.houde.spring.ioc.impl.CollectionTestBean">
+        <!--set注入-->
+        <property name="values">
+            <set>
+                <value>1</value>
+                <value>2</value>
+                <value>3</value>
+            </set>
+        </property>
+        <!--注入map  -->
+        <property name="maps">
+            <map key-type="java.lang.String" value-type="java.lang.String">
+                <entry key="name" value="houde"/>
+                <entry key="age" value="26"/>
+            </map>
+        </property>
+    </bean>
+
+    <!-- 通过local注入 -->
+    <bean id="HelloApiDecorator1" class="com.houde.spring.ioc.impl.HelloApiDecorator">
+        <constructor-arg index="0">
+            <ref local="bean_setter"/>
+        </constructor-arg>
+    </bean>
+    <!-- 通过parent 父容器注入 -->
+    <!--<bean id="HelloApiDecorator2" class="com.houde.spring.ioc.impl.HelloApiDecorator">-->
+    <!--<property name="helloApi">-->
+    <!--<ref parent="bean_setter"/>-->
+    <!--</property>-->
+    <!--</bean>-->
+
+
+    <!--depends on 测试-->
+    <bean id="resourceBean"
+          class="com.houde.spring.ioc.impl.ResourceBean"
+          lazy-init="true"
+          init-method="init" destroy-method="destroy">
+        <!--只有“singleton”作用域能销毁，“prototype”作用域的一定不能-->
+        <property name="file" value="D:/test.txt"/>
+    </bean>
+    <bean id="dependentBean"
+          lazy-init="true"
+          class="com.houde.spring.ioc.impl.DependentBean"
+          init-method="init" destroy-method="destroy" depends-on="resourceBean">
+        <property name="resourceBean" ref="resourceBean"/>
+    </bean>
+
+
+    <!--通过方法注入的方式-->
+    <bean id="prototypePrinter"
+          class="com.houde.spring.ioc.impl.Printer" scope="prototype"/>
+    <bean id="singletonPrinter"
+          class="com.houde.spring.ioc.impl.Printer" scope="singleton"/>
+
+    <!--<bean id="helloApi1" class="com.houde.spring.ioc.impl.HelloImpl5" scope="singleton">-->
+        <!--<property name="printer" ref="prototypePrinter"/>-->
+        <!--<lookup-method name="createPrototypePrinter" bean="prototypePrinter"/>-->
+        <!--<lookup-method name="createSingletonPrinter" bean="singletonPrinter"/>-->
+    <!--</bean>-->
+    <bean id="helloApi2" class="com.houde.spring.ioc.impl.HelloImpl5" scope="prototype">
+        <property name="printer" ref="prototypePrinter"/>
+        <lookup-method name="createPrototypePrinter" bean="prototypePrinter"/>
+        <lookup-method name="createSingletonPrinter" bean="singletonPrinter"/>
+    </bean>
+
+
+    <!--source 注入-->
+    <bean id="resourceBean1" class="com.houde.spring.resource.ResourceBean3">
+        <property name="resource" value="com/houde/spring/resource/test.properties"/>
+    </bean>
+    <bean id="resourceBean2" class="com.houde.spring.resource.ResourceBean3">
+        <property name="resource"
+                  value="classpath:com/houde/spring/resource/test.properties"/>
+    </bean>
+
+</beans>
+

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
+        http://www.springframework.org/schema/aop
+        http://www.springframework.org/schema/aop/spring-aop-3.0.xsd"
+>
+
+
+    <bean id="helloWorldService"
+          class="com.houde.spring.aop.HelloWorldService"/>
+
+    <bean id="aspect" class="com.houde.spring.aop.schema.HelloWorldAspect"/>
+
+    <bean id="beforeAdvice" class="com.houde.spring.aop.BeforeAdviceImpl"/>
+
+
+    <!--schema 风格的AOP-->
+    <aop:config>
+        <!--切入点  (* com.houde..*.*(..)) 表示 com.houde.spring.aop包以及子包的任何方法执行 -->
+        <aop:pointcut id="pointcut" expression="execution(* com.houde.spring.aop..*.*(..))"/>
+
+        <!--切面 -->
+        <aop:aspect ref="aspect">
+            <!--前置通知-->
+            <aop:before pointcut-ref="pointcut" method="beforeAdvice"/>
+            <!--效果和 pointcut-ref 一样-->
+            <!--后置通知-->
+            <aop:after pointcut="execution(* com.houde.spring.aop..*.*(..))"
+                       method="afterFinallyAdvice"/>
+            <!--后再返回-->
+            <aop:after-returning pointcut="execution(* com.houde.spring.aop..*.sayAfterReturning(..))"
+                                 method="afterReturningAdvice" arg-names="retVal"
+                                 returning="retVal"/>
+            <!--后置异常-->
+            <aop:after-throwing method="afterThrowingAdvice" pointcut-ref="pointcut" arg-names="exception"
+                                throwing="exception"/>
+            <!--后置最终通知-->
+            <aop:after pointcut="execution(* com.houde.spring.aop..*.sayAfterFinally(..))"
+                       method="afterFinallyAdvice"/>
+
+            <aop:around method="aroundAdvice" pointcut="execution(* com.houde.spring.aop..*.sayAround(..))"/>
+
+
+            <!--匹配IHelloWorldService接口的子类型-->
+            <aop:declare-parents types-matching="com.houde.spring..*.IHelloWorldService+"
+                                 implement-interface="com.houde.spring.aop.IIntroductionService"
+                                 default-impl="com.houde.spring.aop.IntroductiondService"/>
+        </aop:aspect>
+        <!--一个通知一个切入点的切面-->
+        <!--<aop:advisor advice-ref="beforeAdvice" pointcut="execution(* com.houde.spring..*.sayAdvisorBefore(..))"/>-->
+    </aop:config>
+
+</beans>
