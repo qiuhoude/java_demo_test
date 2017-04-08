@@ -22,6 +22,9 @@ import org.apache.lucene.util.Version;
 import java.io.IOException;
 
 public class HelloLucene {
+
+    // http://blog.csdn.net/u013573133/article/details/48246351 实例地址
+
     public static void main(String[] args) throws IOException, ParseException {
         // 0. Specify the analyzer for tokenizing text.
         //    The same analyzer should be used for indexing and searching

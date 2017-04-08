@@ -16,11 +16,12 @@ public class LuceneTester {
     Indexer indexer;
     Searcher searcher;
 
+
     public static void main(String[] args) {
         LuceneTester tester;
         try {
             tester = new LuceneTester();
-//            tester.createIndex();
+            tester.createIndex();
             tester.search("APACHE");
         } catch (IOException e) {
             e.printStackTrace();
