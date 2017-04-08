@@ -4,6 +4,8 @@ import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.core.SimpleAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
+import org.apache.lucene.document.StringField;
+import org.apache.lucene.document.TextField;
 import org.apache.lucene.index.CorruptIndexException;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
@@ -29,6 +31,7 @@ public class Indexer {
         Analyzer analyzer = new SimpleAnalyzer(Version.LUCENE_47);
         IndexWriterConfig iwc = new IndexWriterConfig(Version.LUCENE_47, analyzer);
         iwc.setWriteLockTimeout(5000l);
+        iwc.setOpenMode(IndexWriterConfig.OpenMode.CREATE_OR_APPEND);
         if (IndexWriter.isLocked(dir)) {
             IndexWriter.unlock(dir);
         }
@@ -43,24 +46,18 @@ public class Indexer {
     private Document getDocument(File file) throws IOException {
         Document document = new Document();
 
-        //index file contents
-        Field contentField = new Field(LuceneConstants.CONTENTS,
+        Field contentField = new TextField(LuceneConstants.CONTENTS,
                 new FileReader(file));
         //index file name
-        Field fileNameField = new Field(LuceneConstants.FILE_NAME,
-                file.getName(),
-                Field.Store.YES, Field.Index.NOT_ANALYZED);
+        Field fileNameField = new StringField(LuceneConstants.FILE_NAME,file.getName(), Field.Store.YES);
         //index file path
-        Field filePathField = new Field(LuceneConstants.FILE_PATH,
-                file.getCanonicalPath(),
-                Field.Store.YES, Field.Index.NOT_ANALYZED);
-
+        Field filePathField = new StringField(LuceneConstants.FILE_PATH, file.getCanonicalPath(), Field.Store.YES);
         document.add(contentField);
         document.add(fileNameField);
         document.add(filePathField);
-
         return document;
     }
+
 
     private void indexFile(File file) throws IOException {
         System.out.println("Indexing " + file.getCanonicalPath());

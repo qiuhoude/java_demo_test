@@ -12,7 +12,7 @@ import java.io.IOException;
  */
 public class LuceneTester {
     String indexDir = "E:/Lucene/Index";
-    String dataDir = "E:/Lucene/Data";
+    String dataDir = "C:\\Users\\Administrator\\Desktop\\note";
     Indexer indexer;
     Searcher searcher;
 
@@ -20,11 +20,11 @@ public class LuceneTester {
         LuceneTester tester;
         try {
             tester = new LuceneTester();
-            tester.createIndex();
-            tester.search("Mohan");
+//            tester.createIndex();
+            tester.search("APACHE");
         } catch (IOException e) {
             e.printStackTrace();
-        } catch (ParseException e) {
+        }catch (ParseException e) {
             e.printStackTrace();
         }
     }
@@ -43,15 +43,15 @@ public class LuceneTester {
     private void search(String searchQuery) throws IOException, ParseException{
         searcher = new Searcher(indexDir);
         long startTime = System.currentTimeMillis();
-        TopDocs hits = searcher.search(searchQuery);
+        TopDocs topDocs = searcher.search(searchQuery);
         long endTime = System.currentTimeMillis();
-
-        System.out.println(hits.totalHits +
+        ScoreDoc[] hits =topDocs.scoreDocs;
+        System.out.println(hits.length +
                 " documents found. Time :" + (endTime - startTime));
-        for(ScoreDoc scoreDoc : hits.scoreDocs) {
+        for(ScoreDoc scoreDoc : hits) {
             Document doc = searcher.getDocument(scoreDoc);
             System.out.println("File: "
-                    + doc.get(LuceneConstants.FILE_PATH));
+                    + doc.get(LuceneConstants.FILE_PATH) +" filename"+doc.get(LuceneConstants.FILE_NAME));
         }
         searcher.close();
     }
