@@ -1,0 +1,12 @@
+server:
+  port: 8081
+  context-path: /
+
+cupSize: D
+age: 24
+
+content: "${cupSize} , ${age}"
+
+girl:
+  name: enqi
+  age: 5

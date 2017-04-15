@@ -18,6 +18,7 @@ public class TestShutDown {
         service.submit(new Task(3));
         service.shutdown();
         while (!service.awaitTermination(1, TimeUnit.SECONDS)) {
+            //awaitTermination 回等待线程池
             System.out.println("线程池没有关闭");
         }
         System.out.println("线程池已经关闭======close");
