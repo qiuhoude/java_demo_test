@@ -2,6 +2,7 @@ package com.houde.spring.aop.aspectj;
 
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.*;
+import org.springframework.stereotype.Component;
 
 /**
  * Created by Administrator on 2017/3/30 0030.
@@ -9,6 +10,7 @@ import org.aspectj.lang.annotation.*;
 
 //声明切面
 @Aspect
+@Component
 public class HelloWorldAspect2 {
 
     //声明切入点

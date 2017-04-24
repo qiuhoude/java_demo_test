@@ -1,4 +1,4 @@
-package com.houde.multithread;
+package com.houde.concurrent.executors_demo;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;

@@ -1,8 +1,11 @@
 package com.houde.spring.aop;
 
+import org.springframework.stereotype.Component;
+
 /**
  * Created by Administrator on 2017/3/29 0029.
  */
+@Component("helloWorldService")
 public class HelloWorldService implements IHelloWorldService {
     public void sayHello(String name) {
         System.out.println("============Hello World! " + name);
