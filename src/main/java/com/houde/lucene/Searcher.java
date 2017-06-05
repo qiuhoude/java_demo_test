@@ -41,9 +41,13 @@ public class Searcher {
     public TopDocs search(String searchQuery)
             throws IOException, ParseException {
         //调用parser 进行语法分析，形成查询语法树，放到Query 中
+        //搜索某个 Field的字段 可以使用 field域名:[搜索关键字1] AND [搜索关键字2]
         query = queryParser.parse(searchQuery);
+        System.out.println("query = " + query.toString());
+        //最大条数
         int hitsPerPage = 10;
         TopScoreDocCollector collector = TopScoreDocCollector.create(hitsPerPage, true);
+        //
         indexSearcher.search(query, collector);
         return collector.topDocs();
     }
